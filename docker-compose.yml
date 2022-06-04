@@ -1,0 +1,17 @@
+version: '3.7'
+
+networks:
+  go_net:
+    
+services:
+  site:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    volumes:
+      - .:/app
+    networks: 
+      - go_net
+
