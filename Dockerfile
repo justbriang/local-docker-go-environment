@@ -1,20 +1,28 @@
 # baseimage
 FROM golang:1.18.3-alpine3.16
 
-WORKDIR /app
+RUN mkdir /app
 
-COPY *.go ./
+WORKDIR /app
 
 # WORKDIR /app/go-modules
 # Download necessary Go modules
-COPY go.mod ./
-COPY go.sum ./
-
+# COPY ./src/go.mod ./
+# COPY ./src/go.sum ./
+# COPY /src ./
+ADD /src ./
+# ADD . .
 RUN go mod download
 
-COPY *.go ./
+
 
 # EXPOSE 8081
+RUN ls
 
-RUN go build -o /my-app
+# CMD ["cd /src/cmd/web"]
+
+# RUN go build -o /handlers internal/handlers/handlers.go
+RUN go build -o /my-app  cmd/web/*.go
+# ENTRYPOINT go build cmd/web/*.go && ./app
+# RUN go run cmd/web/*.go
 CMD [ "/my-app" ]

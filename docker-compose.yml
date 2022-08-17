@@ -9,9 +9,47 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "80:80"
+      - "8090:80"
     volumes:
-      - .:/app
+      - ./src:/app:delegated
     networks: 
       - go_net
+    environment:
+      - 'DB_PORT=3306'
+      - 'DB_HOST=gomysql'
+
+    depends_on:
+      - gomysql
+      - gophpmyadmin
+
+  gomysql:
+    image: mariadb:10.6
+    container_name: gomysql
+    restart: unless-stopped
+    tty: true
+    ports:
+      - 3306:3306
+    volumes:
+      - ./mysql:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: godb
+      MYSQL_USER: root
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: secret
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    networks:
+      - go_net
+
+  gophpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: gophpmyadmin
+    networks:
+      - go_net
+    ports:
+      - 8080:80
+    environment:
+      PMA_HOST: gomysql
+    depends_on:
+      - gomysql
 
