@@ -1,30 +1,31 @@
-version: '3.7'
+version: '3.8'
 
 networks:
-  go_net:
-    
+  go-network:
+    driver: bridge
+
 services:
-  site:
-    build: 
+  api:
+    build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "80:80"
+      - '80:80'
     volumes:
       - ./src:/app:delegated
-    networks: 
-      - go_net
+    networks:
+      - go-network
     environment:
       - 'DB_PORT=3306'
-      - 'DB_HOST=gomysql'
+      - 'DB_HOST=go-mysql'
 
     depends_on:
-      - gomysql
-      - gophpmyadmin
+      - go-mysql
+      - go-phpmyadmin
 
-  gomysql:
+  go-mysql:
     image: mariadb:10.6
-    container_name: gomysql
+    container_name: go-mysql
     restart: unless-stopped
     tty: true
     ports:
@@ -32,24 +33,23 @@ services:
     volumes:
       - ./mysql:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: godb
+      MYSQL_DATABASE: wanderdb
       MYSQL_USER: root
       MYSQL_PASSWORD: secret
       MYSQL_ROOT_PASSWORD: secret
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql
     networks:
-      - go_net
+      - go-network
 
-  gophpmyadmin:
+  go-phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
-    container_name: gophpmyadmin
+    container_name: go-phpmyadmin
     networks:
-      - go_net
+      - go-network
     ports:
       - 8080:80
     environment:
-      PMA_HOST: gomysql
+      PMA_HOST: go-mysql
     depends_on:
-      - gomysql
-
+      - go-mysql
