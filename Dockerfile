@@ -1,28 +1,13 @@
-# baseimage
-FROM golang:1.18.3-alpine3.16
+FROM golang:alpine
 
 RUN mkdir /app
-
 WORKDIR /app
 
-# WORKDIR /app/go-modules
-# Download necessary Go modules
-# COPY ./src/go.mod ./
-# COPY ./src/go.sum ./
-# COPY /src ./
-ADD /src ./
-# ADD . .
+COPY /src ./
+
 RUN go mod download
 
+RUN go get github.com/githubnemo/CompileDaemon
+RUN go install github.com/githubnemo/CompileDaemon
 
-
-# EXPOSE 8081
-RUN ls
-
-# CMD ["cd /src/cmd/web"]
-
-# RUN go build -o /handlers internal/handlers/handlers.go
-RUN go build -o /my-app  cmd/web/*.go
-# ENTRYPOINT go build cmd/web/*.go && ./app
-# RUN go run cmd/web/*.go
-CMD [ "/my-app" ]
+ENTRYPOINT CompileDaemon --build="go build -o /my-app ./cmd/web" --command=/my-app
