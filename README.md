@@ -26,10 +26,7 @@ Depending on your project structure, you might need to edit the path used in bui
 The line : `ENTRYPOINT CompileDaemon --build="go build -o /my-app ./cmd/api" --command=/my-app ` more specifically the `./cmd/api` bit
 
 This is build for a project with the following folder structure :
-`src
-     cmd
-        api 
-            main.go `
+`src/cmd/api/main.go `
 
 #### if project already exists
 
@@ -58,7 +55,7 @@ This is build for a project with the following folder structure :
 
 Having spun up your docker containers, you can access your phpmyadmin dashboard on `localhost:8080`.
 
-Credentials for the mariadb setup can be found on the docker-compose yml file, under `gomysql`
+Credentials for the mariadb setup can be found on the docker-compose yml file, under `go-mysql`
 
 ## Issues
 
